@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const bodyParser = require("body-parser")
 const cors = require("cors")
+const ObjectId = require("mongodb").ObjectId;
 const fsExtra = require("fs-extra")
 const fileUpload = require("express-fileupload")
 const port = process.env.PORT || 4000;
@@ -42,7 +43,7 @@ client.connect(err => {
 
           serviceCollection.insertOne({title, description, image})
             .then(result =>{
-                res.send(result.insertedCount > 0);
+                res.send(result.acknowledged);
             })
 
       })
@@ -63,6 +64,8 @@ client.connect(err => {
         const category = req.body.customerCategory;
         const description = req.body.customerDescription;
         const price = req.body.customerPrice;
+        const status = req.body.status;
+        console.log(status)
 
         const imgData = file.data;
         const incImg = imgData.toString('base64');
@@ -73,9 +76,10 @@ client.connect(err => {
             img: Buffer.from(incImg, 'base64')
         }
 
-        ordersCollection.insertOne({name, email, category, description, price, image})
+        ordersCollection.insertOne({name, email, status, category, description, price, image})
             .then( result => {
-                res.send(result.insertedCount > 0)
+                res.send(result.acknowledged)
+                console.log(result)
             })
     })
 
@@ -100,7 +104,7 @@ client.connect(err => {
         const review = req.body;
         reviewsCollection.insertOne(review)
             .then( result => {
-                res.send(result.insertedCount > 0)
+                res.send(result.acknowledged)
             })
     })
     //get review
@@ -115,7 +119,7 @@ client.connect(err => {
         const adminEmail = req.body; 
         adminCollection.insertOne(adminEmail)
             .then(result => {
-                res.send(result.insertedCount > 0)
+                res.send(result.acknowledged)
             })
     })
     //get admin
@@ -125,7 +129,17 @@ client.connect(err => {
                 res.send(result.length > 0)
             })
     })
-
+    //change status
+    app.patch('/updateStatus/:id', (req, res) => {
+        ordersCollection.updateOne(
+            {_id: ObjectId(req.params.id)},
+            {$set: {status: req.body.status}}
+        ).then(result => {
+            res.send(result.acknowledged)
+            console.log(result)
+        })
+    })
+    
 });
 
 app.listen(port, () => {
