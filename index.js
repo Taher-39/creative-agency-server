@@ -79,7 +79,6 @@ client.connect(err => {
         ordersCollection.insertOne({name, email, status, category, description, price, image})
             .then( result => {
                 res.send(result.acknowledged)
-                console.log(result)
             })
     })
 
