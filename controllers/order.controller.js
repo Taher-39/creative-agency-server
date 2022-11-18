@@ -7,8 +7,6 @@ const uploadOrder = (req, res) => {
     const { name, email, category, description, price, status, newAmount } =
       req.body;
 
-    console.log(name, email, status, category, description, price);
-
     const file = req.files.file;
     const imgData = file.data;
     const incImg = imgData.toString("base64");
@@ -26,7 +24,7 @@ const uploadOrder = (req, res) => {
 
         client.userCollection.findOneAndUpdate(
           { email: email },
-          { $set: { amount: newAmount } },
+          { $set: { amount: Number(newAmount) } },
           { returnNewDocument: true }
         );
       });

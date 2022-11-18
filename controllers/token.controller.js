@@ -8,7 +8,8 @@ const CreateNewToken = (req, res) => {
     amount,
     token,
     isValid: true,
-    createdAt: new Date().toLocaleString(),
+    createdAt: new Date().toLocaleDateString(),
+    updatedAt: new Date().toLocaleDateString(),
   };
 
   client.tokenCollection.insertOne(tokenInfo).then((result) => {
@@ -16,7 +17,7 @@ const CreateNewToken = (req, res) => {
   });
 };
 
-//get total valid token from admin
+//get total token from admin
 const FindValidToken = (req, res) => {
   client.tokenCollection.find().toArray((err, result) => {
     res.send(result);
@@ -68,9 +69,42 @@ const DeleteToken = (req, res) => {
   }
 };
 
+//get single token
+const getSingleToken = (req, res) => {
+  try {
+    client.tokenCollection
+      .find({ _id: ObjectId(req.params.id) })
+      .toArray((err, result) => {
+        res.send(result);
+      });
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
+//update token from admin
+const UpdateToken = (req, res) => {
+  try {
+    const { amount, token } = req.body;
+
+    client.tokenCollection
+      .updateOne(
+        { _id: ObjectId(req.params.id) },
+        { $set: { token, amount, updatedAt: new Date().toLocaleDateString() } }
+      )
+      .then((result) => {
+        res.send(result.modifiedCount > 0);
+      });
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
 module.exports = {
   CreateNewToken,
   FindValidToken,
   AddMoney,
   DeleteToken,
+  getSingleToken,
+  UpdateToken,
 };
