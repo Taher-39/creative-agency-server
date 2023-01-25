@@ -1,7 +1,7 @@
-const client = require("../utils/dbConnect");
+import client from "../utils/dbConnect.js";
 
 //post review
-const postReview = (req, res) => {
+export const postReview = (req, res) => {
   const review = req.body;
   client.reviewsCollection.insertOne(review).then((result) => {
     res.send(result.acknowledged);
@@ -9,23 +9,17 @@ const postReview = (req, res) => {
 };
 
 //get review
-const getReview = (req, res) => {
+export const getReview = (req, res) => {
   client.reviewsCollection.find().toArray((err, result) => {
     res.send(result);
   });
 };
 
 //see isClient or not
-const isClient = (req, res) => {
+export const isClient = (req, res) => {
   client.ordersCollection
     .find({ email: req.body.email })
     .toArray((err, result) => {
       res.send(result.length > 0);
     });
-};
-
-module.exports = {
-  postReview,
-  getReview,
-  isClient
 };

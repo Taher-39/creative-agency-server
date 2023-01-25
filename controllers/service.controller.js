@@ -1,38 +1,29 @@
-const { ObjectId } = require("mongodb");
-const client = require("../utils/dbConnect");
+import Service from "../models/serviceModel.js";
 
-module.exports.addService = (req, res, next) => {
+export const addService = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    console.log(req.file);
+    const service = new Service(req.body);
 
-    const file = req.files.file;
-    const imgData = file.data;
-    const incImg = imgData.toString("base64");
+    const result = await service.save();
 
-    const image = {
-      contentType: file.mimetype,
-      size: file.size,
-      img: Buffer.from(incImg, "base64"),
-    };
-
-    client.serviceCollection
-      .insertOne({ title, description, image })
-      .then((result) => {
-        res.send(result.acknowledged);
-      });
+    res.status(200).json({
+      status: "success",
+      data: result,
+    });
   } catch (error) {
-    res.status(400).send("Service not upload");
+    res.status(400).send(error.message);
   }
 };
 
-module.exports.getServices = (req, res, next) => {
+export const getServices = (req, res, next) => {
   client.serviceCollection.find().toArray((err, result) => {
     res.send(result);
   });
 };
 
 //get single services
-module.exports.getSingleService = (req, res) => {
+export const getSingleService = (req, res) => {
   try {
     client.serviceCollection
       .find({ _id: ObjectId(req.params.id) })
@@ -44,7 +35,7 @@ module.exports.getSingleService = (req, res) => {
   }
 };
 
-module.exports.deleteService = (req, res, next) => {
+export const deleteService = (req, res, next) => {
   try {
     client.serviceCollection
       .deleteOne({ _id: ObjectId(req.params.id) })
@@ -55,7 +46,7 @@ module.exports.deleteService = (req, res, next) => {
     res.send(error.message);
   }
 };
-module.exports.editService = (req, res, next) => {
+export const editService = (req, res, next) => {
   try {
     const { title, description, image } = req.body;
     client.serviceCollection

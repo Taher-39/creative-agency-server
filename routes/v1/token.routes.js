@@ -1,12 +1,12 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   CreateNewToken,
   FindValidToken,
   AddMoney,
   DeleteToken,
   UpdateToken,
   getSingleToken,
-} = require("../../controllers/token.controller");
+} from "../../controllers/token.controller.js";
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.get("/getSingleToken/:id", getSingleToken);
 
 router.route("/manage-token/:id").delete(DeleteToken).patch(UpdateToken);
 
-module.exports = router;
+export default router;

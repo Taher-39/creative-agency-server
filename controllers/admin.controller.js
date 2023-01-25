@@ -1,7 +1,7 @@
-const client = require("../utils/dbConnect");
+import client from "../utils/dbConnect.js";
 
 //post admin
-const addNewAdmin = (req, res) => {
+export const addNewAdmin = (req, res) => {
   const adminEmail = req.body;
   client.adminCollection.insertOne(adminEmail).then((result) => {
     res.send(result.acknowledged);
@@ -9,15 +9,10 @@ const addNewAdmin = (req, res) => {
 };
 
 //see isAdmin or not
-const isAdmin = (req, res) => {
+export const isAdmin = (req, res) => {
   client.adminCollection
     .find({ email: req.body.email })
     .toArray((err, result) => {
       res.send(result.length > 0);
     });
-};
-
-module.exports = {
-  addNewAdmin,
-  isAdmin,
 };

@@ -1,8 +1,8 @@
-const { ObjectId } = require("mongodb");
-const client = require("../utils/dbConnect");
+import ObjectId from "mongodb";
+import client from "../utils/dbConnect.js";
 
 //post order with img
-const uploadOrder = (req, res) => {
+export const uploadOrder = (req, res) => {
   try {
     const { name, email, category, description, price, status, newAmount } =
       req.body;
@@ -17,8 +17,19 @@ const uploadOrder = (req, res) => {
       img: Buffer.from(incImg, "base64"),
     };
 
+    const date = new Date().toLocaleDateString();
+
     client.ordersCollection
-      .insertOne({ name, email, status, category, description, price, image })
+      .insertOne({
+        name,
+        email,
+        status,
+        category,
+        description,
+        price,
+        image,
+        date,
+      })
       .then((result) => {
         res.send(result.acknowledged);
 
@@ -34,14 +45,14 @@ const uploadOrder = (req, res) => {
 };
 
 //get total orders
-const totalOrders = (req, res) => {
+export const totalOrders = (req, res) => {
   client.ordersCollection.find().toArray((err, result) => {
     res.send(result);
   });
 };
 
 //get order by email
-const singleOrder = (req, res) => {
+export const singleOrder = (req, res) => {
   client.ordersCollection
     .find({ email: req.query.email })
     .toArray((err, result) => {
@@ -51,7 +62,7 @@ const singleOrder = (req, res) => {
 
 //change order status
 
-const changeStatus = (req, res) => {
+export const changeStatus = (req, res) => {
   client.ordersCollection
     .updateOne(
       { _id: ObjectId(req.params.id) },
@@ -60,11 +71,4 @@ const changeStatus = (req, res) => {
     .then((result) => {
       res.send(result.acknowledged);
     });
-};
-
-module.exports = {
-  uploadOrder,
-  totalOrders,
-  singleOrder,
-  changeStatus,
 };

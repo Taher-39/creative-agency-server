@@ -1,8 +1,8 @@
-const { ObjectId } = require("mongodb");
-const client = require("../utils/dbConnect");
+import ObjectId from "mongodb";
+import client from "../utils/dbConnect.js";
 
 //post token from admin
-const CreateNewToken = (req, res) => {
+export const CreateNewToken = (req, res) => {
   const { amount, token } = req.body;
   const tokenInfo = {
     amount,
@@ -18,7 +18,7 @@ const CreateNewToken = (req, res) => {
 };
 
 //get total token from admin
-const FindValidToken = (req, res) => {
+export const FindValidToken = (req, res) => {
   client.tokenCollection.find().toArray((err, result) => {
     res.send(result);
   });
@@ -26,7 +26,7 @@ const FindValidToken = (req, res) => {
 
 //add money in user account using token
 // and change token isValid status
-const AddMoney = (req, res) => {
+export const AddMoney = (req, res) => {
   try {
     const { token, email } = req.body;
 
@@ -57,7 +57,7 @@ const AddMoney = (req, res) => {
 };
 
 // delete token from admin
-const DeleteToken = (req, res) => {
+export const DeleteToken = (req, res) => {
   try {
     client.tokenCollection
       .deleteOne({ _id: ObjectId(req.params.id) })
@@ -70,7 +70,7 @@ const DeleteToken = (req, res) => {
 };
 
 //get single token
-const getSingleToken = (req, res) => {
+export const getSingleToken = (req, res) => {
   try {
     client.tokenCollection
       .find({ _id: ObjectId(req.params.id) })
@@ -83,7 +83,7 @@ const getSingleToken = (req, res) => {
 };
 
 //update token from admin
-const UpdateToken = (req, res) => {
+export const UpdateToken = (req, res) => {
   try {
     const { amount, token } = req.body;
 
@@ -98,13 +98,4 @@ const UpdateToken = (req, res) => {
   } catch (error) {
     res.send(error.message);
   }
-};
-
-module.exports = {
-  CreateNewToken,
-  FindValidToken,
-  AddMoney,
-  DeleteToken,
-  getSingleToken,
-  UpdateToken,
 };

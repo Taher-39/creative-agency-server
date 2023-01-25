@@ -1,15 +1,18 @@
-const express = require("express");
-const serviceController = require("../../controllers/service.controller");
+import express from "express";
+import {
+  addService,
+  getServices,
+  getSingleService,
+  deleteService,
+  editService,
+} from "../../controllers/service.controller.js";
 const router = express.Router();
 
-router.post("/addService", serviceController.addService);
+router.post("/addService", addService);
 
-router.get("/getService", serviceController.getServices);
-router.get("/get-single-service/:id", serviceController.getSingleService);
+router.get("/getService", getServices);
+router.get("/get-single-service/:id", getSingleService);
 
-router
-  .route("/manage/:id")
-  .delete(serviceController.deleteService)
-  .patch(serviceController.editService);
+router.route("/manage/:id").delete(deleteService).patch(editService);
 
-module.exports = router;
+export default router;

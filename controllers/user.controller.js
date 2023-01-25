@@ -1,9 +1,9 @@
-const client = require("../utils/dbConnect");
+import client from "../utils/dbConnect.js";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
-const authUser = async (req, res) => {
+export const authUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await client.userCollection.findOne({ email });
@@ -26,7 +26,7 @@ const authUser = async (req, res) => {
 // @desc    Register a new user
 // @route   POST /api/users
 // @access  Public
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -53,9 +53,4 @@ const registerUser = async (req, res) => {
   } catch (error) {
     res.send("Error found", error.message);
   }
-};
-
-module.exports = {
-  registerUser,
-  authUser,
 };
